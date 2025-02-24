@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-filerix = { path = "../../../filerix-rust" }
+filerix = "0.1"
