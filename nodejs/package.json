@@ -1,6 +1,6 @@
 {
   "type": "module",
   "dependencies": {
-    "@filesverse/filerix": "^v1.1.0"
+    "@filesverse/filerix": "^v1.1.2"
   }
 }
