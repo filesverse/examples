@@ -1,17 +1,23 @@
 VCPKG_REPO = https://github.com/microsoft/vcpkg.git
 PREFIX ?= /usr/local
 
-all: build
+all: pkgconfig
 
-build: check-vcpkg setup-vcpkg-port
+pkgconfig:
+	mkdir -p build
+	cd build && cmake ..
+	cd build && cmake --build .
+
+vcpkg: check-vcpkg setup-vcpkg-port
 	@echo "Bootstrapping vcpkg..."
 	./vcpkg/bootstrap-vcpkg.sh || { echo "Failed to bootstrap vcpkg"; exit 1; }
 	@echo "Installing dependencies with vcpkg..."
 	./vcpkg/vcpkg --feature-flags=manifests install --triplet x64-linux-release || { echo "Failed to install dependencies"; exit 1; }
 	@echo "Generating build files with CMake..."
-	mkdir -p build && cd build && cmake .. || { echo "Failed to generate CMake build files"; exit 1; }
+	mkdir -p build
+	cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake .. || { echo "Failed to generate CMake build files"; exit 1; }
 	@echo "Building the project..."
-	cmake --build build --parallel || { echo "Build failed"; exit 1; }
+	cd build && cmake --build . --parallel || { echo "Build failed"; exit 1; }
 	@echo "Build complete!"
 
 setup-vcpkg-port:
@@ -28,14 +34,13 @@ check-vcpkg:
 		git clone $(VCPKG_REPO) vcpkg || { echo "Failed to clone vcpkg"; exit 1; }; \
 	fi
 
-uninstall:
-	@echo "Removing installed files..."
-	rm -f $(PREFIX)/lib64/node_modules/filerix/filerix.node
-	@echo "Uninstallation complete!"
+meson:
+	meson setup build --reconfigure
+	ninja -C build
 
 clean:
 	@echo "Cleaning build directory..."
-	rm -rf build vcpkg_installed vcpkg-port
+	rm -rf build vcpkg_installed vcpkg-port vcpkg
 	@echo "Clean complete!"
 
-.PHONY: all install build uninstall clean
+.PHONY: all pkgconfig vcpkg uninstall clean

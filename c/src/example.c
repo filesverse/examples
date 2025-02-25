@@ -85,7 +85,7 @@ int main()
   printf("Files in %s:\n", home_dir);
   for (size_t i = 0; i < files.count; i++)
   {
-    printf("- %s\n", files.files[i]);
+    printf("- %s\n", files.files[i].name);
   }
 
   char search_query[] = "example";
@@ -99,7 +99,7 @@ int main()
   printf("Search results for '%s':\n", search_query);
   for (size_t i = 0; i < result.count; i++)
   {
-    printf("- %s\n", result.files[i]);
+    printf("- %s\n", result.files[i].name);
   }
 
   char new_file_path[512];
