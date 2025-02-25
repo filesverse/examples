@@ -1,0 +1,6 @@
+[project]
+name = "filerix-example"
+version = "0.1.0"
+description = "Example usage of Filerix Python bindings"
+authors = [{ name = "Your Name" }]
+dependencies = ["filerix"]
